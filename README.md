@@ -39,6 +39,14 @@ An intelligent FAQ chatbot built using n8n, Google Gemini, and Google Sheets.
 ### Chatbot Demo
 ![Chatbot Demo](chatbot-demo.png)
 
+## Setup
+
+1. Import `workflow.json` into n8n
+2. Configure Google Gemini credentials
+3. Configure Google Sheets OAuth credentials
+4. Create and connect the `FAQ_Master` Google Sheet
+5. Execute the workflow and start chatting
+
 ## Future Improvements
 
 - PDF Chatbot
