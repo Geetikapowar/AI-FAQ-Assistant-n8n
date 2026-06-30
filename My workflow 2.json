@@ -1,0 +1,356 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1d46a273-9124-4ebb-b513-0d0ba575bec2",
+      "name": "When chat message received",
+      "webhookId": "b558548c-3a2b-4cc5-ac45-e151766993be"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an e-commerce FAQ assistant.\n\nYou have access to a Google Sheets tool called FAQ.\n\nInstructions:\n1. ALWAYS use the FAQ tool first.\n2. Search the FAQ sheet for information related to the user's question.\n3. If a matching FAQ is found, answer using the FAQ answer.\n4. If no matching FAQ exists, say:\n   \"I couldn't find that information in our FAQ database.\"\n\nDo not make up answers.\n\nResponse format:\n\n📌 Answer:\n<answer>\n\n🔗 Related FAQs:\n- <related faq 1>\n- <related faq 2>"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ad54a2aa-ade5-4c23-b3c2-42c54dd7858c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "9d80789a-7a2f-4aa2-bb55-e276b7fb54d6",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ihTdMMU9VMJGHM33",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        224,
+        208
+      ],
+      "id": "63b90291-0ca0-4139-ad76-19987952e135",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        208
+      ],
+      "id": "dd9fd355-7dd8-4c59-9546-32e434eda2bd",
+      "name": "FAQ_sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8sQXwueveVtZHn0H",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b67a0240-323f-4d3c-b2a3-1c3b88ae8258",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "I couldn't find",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        704,
+        144
+      ],
+      "id": "c829f2e2-c92a-490d-aee7-cdb2c3c85418",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1560928721,
+          "mode": "list",
+          "cachedResultName": "Chat_Logs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc/edit#gid=1560928721"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "Test",
+            "User Question": "hello",
+            "AI Answer": "hello2"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "User Question",
+              "displayName": "User Question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AI Answer",
+              "displayName": "AI Answer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        16
+      ],
+      "id": "3bd3519e-d4bc-41f0-b37b-8fc18ed2bc7a",
+      "name": "Chat_logs",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8sQXwueveVtZHn0H",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2073831730,
+          "mode": "list",
+          "cachedResultName": "Unknown_Queries",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14Ev_9ARtFJTg2UxvuG-1eX5lrEtTG-pYvLa__o5afnc/edit#gid=2073831730"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $now }}",
+            "Question": "={{ $('When chat message received').item.json.chatInput }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Question",
+              "displayName": "Question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        848,
+        176
+      ],
+      "id": "9fe2715f-181f-46c7-91b3-ddca5fb5c650",
+      "name": "collect_unknown_query",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8sQXwueveVtZHn0H",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FAQ_sheet": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Chat_logs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "collect_unknown_query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ec04c596-26ce-4b0f-9533-126730c04d4d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "db5fa90aa016dd4bc7bab616bd24b0a4d811c367cfc6b6fd85190ef66827c1ae"
+  },
+  "nodeGroups": [],
+  "id": "atSe9pUvX7Uop9qW",
+  "tags": []
+}
