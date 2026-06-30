@@ -28,6 +28,17 @@ An intelligent FAQ chatbot built using n8n, Google Gemini, and Google Sheets.
 - API Integration
 - Conversational AI
 
+## Project Screenshots
+
+### Workflow Diagram
+![Workflow Diagram](workflow-diagram.png)
+
+### FAQ Database
+![FAQ Database](FAQ-database.png)
+
+### Chatbot Demo
+![Chatbot Demo](chatbot-demo.png)
+
 ## Future Improvements
 
 - PDF Chatbot
